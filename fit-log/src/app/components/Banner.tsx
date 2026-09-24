@@ -23,7 +23,7 @@ export default function Hero() {
         </a>
       </div>
 
-      <div className="relative h-80 w-full md:h-[420px]">
+      <div className="relative h-80 w-full md:h-[530px]">
         <Image src="/banner.png" alt="Workout banner" fill priority className="rounded-2xl object-cover" />
       </div>
     </section>

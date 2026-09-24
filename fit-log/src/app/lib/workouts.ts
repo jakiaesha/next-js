@@ -34,7 +34,7 @@ export const normalize = (w: any): Workout => ({
   sets: w.sets ?? "",
   reps: w.reps ?? "",
   duration: num(w.duration ?? w.minutes),
-  calories: num(w.calories ?? w.kcal),
+  calories: Number(w.calories ?? w.kcal ?? w.calorie ?? 0),
   rating: num(w.rating),
   instructions: steps(w.instructions ?? w.steps),
 });

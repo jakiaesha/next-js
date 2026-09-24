@@ -1,17 +1,22 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { Suspense, useMemo, useState } from "react";
 import Link from "next/link";
+import { useRouter, useSearchParams } from "next/navigation";
 import { usePlan } from "../context/PlanContext";
 import { Check, Chevron, Clock, Flame, Star, X } from "../components/Icons";
 
 type Tab = "plan" | "saved";
 type Sort = "duration" | "calories" | "rating";
 
-export default function MyPlanPage() {
+function MyPlanContent() {
   const { plan, saved, doneIds, hydrated, remove, markDone } = usePlan();
-  const [tab, setTab] = useState<Tab>("plan");
+  const router = useRouter();
+  const params = useSearchParams();
   const [sortBy, setSortBy] = useState<Sort>("duration");
+
+  // The tab now comes from the URL: /my-plan or /my-plan?tab=saved
+  const tab: Tab = params.get("tab") === "saved" ? "saved" : "plan";
 
   const list = tab === "plan" ? plan : saved;
 
@@ -36,14 +41,18 @@ export default function MyPlanPage() {
   return (
     <section className="mx-auto max-w-6xl px-4 py-12 sm:px-8">
       <h1 className="font-display text-4xl font-bold uppercase">My Plan</h1>
-      <p className="mt-2 text-sm text-white/60">Cap of five lifts for today. Finish them, then load more.</p>
+      <p className="mt-2 text-sm text-white/60">
+        Cap of five lifts for today. Finish them, then load more.
+      </p>
 
       {/* Metrics */}
       <div className="mt-8 grid grid-cols-3 gap-3 rounded-2xl border border-white/10 bg-white/[0.04] p-5 sm:gap-6">
         {stats.map((s) => (
           <div key={s.label}>
             <p className="text-xs text-white/50">{s.label}</p>
-            <p className="font-display mt-1 text-3xl font-bold text-[#ccff00] sm:text-4xl">{s.value}</p>
+            <p className="font-display mt-1 text-3xl font-bold text-[#ccff00] sm:text-4xl">
+              {s.value}
+            </p>
           </div>
         ))}
       </div>
@@ -54,7 +63,11 @@ export default function MyPlanPage() {
           {(["plan", "saved"] as Tab[]).map((t) => (
             <button
               key={t}
-              onClick={() => setTab(t)}
+              onClick={() =>
+                router.push(t === "plan" ? "/my-plan" : "/my-plan?tab=saved", {
+                  scroll: false,
+                })
+              }
               className={`rounded-full px-4 py-1.5 text-xs font-semibold ${
                 tab === t ? "bg-[#ccff00] text-black" : "text-white/70"
               }`}
@@ -91,8 +104,12 @@ export default function MyPlanPage() {
           </p>
         ) : sorted.length === 0 ? (
           <div className="rounded-2xl border border-white/10 py-20 text-center">
-            <h2 className="font-display text-2xl font-bold uppercase">Nothing here yet</h2>
-            <p className="mt-2 text-sm text-white/60">Browse the library and add a lift to get today moving.</p>
+            <h2 className="font-display text-2xl font-bold uppercase">
+              Nothing here yet
+            </h2>
+            <p className="mt-2 text-sm text-white/60">
+              Browse the library and add a lift to get today moving.
+            </p>
             <Link
               href="/"
               className="mt-6 inline-block rounded-full bg-[#ccff00] px-6 py-2.5 text-sm font-semibold text-black"
@@ -112,15 +129,27 @@ export default function MyPlanPage() {
                   }`}
                 >
                   {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img src={w.image} alt={w.name} className="h-28 w-full rounded-xl object-cover sm:h-20 sm:w-32" />
+                  <img
+                    src={w.image}
+                    alt={w.name}
+                    className="h-28 w-full rounded-xl object-cover sm:h-20 sm:w-32"
+                  />
 
                   <div className="flex-1">
-                    <h3 className="font-display text-base font-bold uppercase">{w.name}</h3>
+                    <h3 className="font-display text-base font-bold uppercase">
+                      {w.name}
+                    </h3>
                     <p className="text-xs text-white/50">{w.equipment}</p>
                     <div className="mt-2 flex gap-4 text-xs text-white/70">
-                      <span className="flex items-center gap-1.5"><Clock /> {w.duration} min</span>
-                      <span className="flex items-center gap-1.5"><Flame /> {w.calories} kcal</span>
-                      <span className="flex items-center gap-1.5"><Star /> {w.rating}</span>
+                      <span className="flex items-center gap-1.5">
+                        <Clock /> {w.duration} min
+                      </span>
+                      <span className="flex items-center gap-1.5">
+                        <Flame /> {w.calories} kcal
+                      </span>
+                      <span className="flex items-center gap-1.5">
+                        <Star /> {w.rating}
+                      </span>
                     </div>
                   </div>
 
@@ -136,7 +165,7 @@ export default function MyPlanPage() {
                       <button
                         onClick={() => markDone(w.id)}
                         disabled={done}
-                        className="inline-flex items-center gap-1.5 rounded-full bg-[#ccff00] px-4 py-2 text-xs font-semibold text-black disabled:opacity-60"
+                        className="inline-flex items-center gap-1.5 rounded-full bg-[#ccff00] px-4 py-2 text-xs font-semibold text-black disabled:opacity-50"
                       >
                         <Check /> {done ? "Done" : "Mark as Done"}
                       </button>
@@ -157,5 +186,14 @@ export default function MyPlanPage() {
         )}
       </div>
     </section>
+  );
+}
+
+// useSearchParams must be wrapped in Suspense for Next.js production builds
+export default function MyPlanPage() {
+  return (
+    <Suspense fallback={null}>
+      <MyPlanContent />
+    </Suspense>
   );
 }

@@ -14,7 +14,7 @@ export default function WorkoutDetails() {
 
   useEffect(() => {
     const c = new AbortController();
-    setStatus("loading");
+    
     fetch(`${API_URL}/${id}`, { signal: c.signal })
       .then(async (res) => {
         if (res.status === 404) return setStatus("missing");
