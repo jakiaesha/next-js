@@ -2,36 +2,9 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import { API_URL, normalize, type Workout } from "../lib/workouts";
 
-const API_URL = "https://api.abcz.workers.dev/api/fitlog"; // list endpoint
-const DETAILS_PATH = "/workout"; // -> /workout/[id]
-
-type Workout = {
-  id: string | number;
-  name: string;
-  image: string;
-  categories: string[];
-  equipment: string;
-  duration: number | string;
-  calories: number | string;
-  rating: number | string;
-};
-
-const toArray = (v: unknown): string[] =>
-  Array.isArray(v) ? v.map(String) : v ? String(v).split(",").map((s) => s.trim()) : [];
-
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const normalize = (w: any): Workout => ({
-  id: w.id ?? w._id,
-  name: w.name ?? w.title ?? "",
-  image: w.image ?? w.img ?? w.thumbnail ?? w.imageUrl ?? "",
-  categories: toArray(w.categories ?? w.category ?? w.tags ?? w.muscleGroups),
-  equipment: toArray(w.equipment).join(", "),
-  duration: w.duration ?? w.minutes ?? "",
-  calories: w.calories ?? w.kcal ?? "",
-  rating: w.rating ?? "",
-});
-
+const DETAILS_PATH = "/workout"; 
 const ClockIcon = () => (
   <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
     <circle cx="12" cy="12" r="9" />
