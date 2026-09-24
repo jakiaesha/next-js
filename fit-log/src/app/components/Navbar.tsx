@@ -13,15 +13,16 @@ const navLinks = [
 export default function Navbar({ planCount = 0, savedCount = 0 }: { planCount?: number; savedCount?: number }) {
   const pathname = usePathname();
 
-  return (
-    <nav className="w-full bg-black text-white px-6 py-4 flex items-center justify-between">
-      {/* Logo */}
+ return (
+  <nav className="w-full bg-black text-white px-6 py-4">
+    <div className="max-w-7xl mx-auto flex items-center justify-between">
+     
       <Link href="/" className="flex items-center gap-2 font-bold text-lg tracking-wide">
         <Image src="/logo.png" alt="FitLog logo" width={24} height={24} />
         FITLOG
       </Link>
 
-      {/* Center nav links */}
+     
       <div className="flex items-center gap-8 text-sm font-medium">
         {navLinks.map((link) => {
           const isActive = pathname === link.href;
@@ -41,7 +42,7 @@ export default function Navbar({ planCount = 0, savedCount = 0 }: { planCount?: 
         })}
       </div>
 
-      {/* Right side badges */}
+      
       <div className="flex items-center gap-3 text-xs font-semibold">
         <Link
           href="/my-plan"
@@ -56,6 +57,7 @@ export default function Navbar({ planCount = 0, savedCount = 0 }: { planCount?: 
           Saved {savedCount}
         </Link>
       </div>
-    </nav>
-  );
+    </div>
+  </nav>
+);
 }

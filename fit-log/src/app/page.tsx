@@ -1,10 +1,11 @@
 import Hero from "./components/Banner";
+import Library from "./components/Library";
 
-export default function Page() {
+export default function Home() {
   return (
-    <div>
+    <>
       <Hero />
-      {/* Library section goes below, with id="library" */}
-    </div>
+      <Library />
+    </>
   );
 }
