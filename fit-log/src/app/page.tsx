@@ -1,11 +1,10 @@
-import React from 'react';
+import Hero from "./components/Banner";
 
-const page = () => {
+export default function Page() {
   return (
     <div>
-      
+      <Hero />
+      {/* Library section goes below, with id="library" */}
     </div>
   );
-};
-
-export default page;
+}
